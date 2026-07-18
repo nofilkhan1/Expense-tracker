@@ -5,12 +5,39 @@ import { useAuth } from './useAuth';
 
 const PAGE_SIZE = 20;
 
-export function useTransactions() {
+export interface TransactionFilters {
+  search?: string;
+  category_id?: string;
+  type?: 'expense' | 'income';
+  date_from?: string;
+  date_to?: string;
+}
+
+export function useTransactions(filters?: TransactionFilters) {
   const { user } = useAuth();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(0);
+
+  const buildQuery = useCallback((query: any) => {
+    if (filters?.search) {
+      query = query.ilike('note', `%${filters.search}%`);
+    }
+    if (filters?.category_id) {
+      query = query.eq('category_id', filters.category_id);
+    }
+    if (filters?.type) {
+      query = query.eq('type', filters.type);
+    }
+    if (filters?.date_from) {
+      query = query.gte('transaction_date', filters.date_from);
+    }
+    if (filters?.date_to) {
+      query = query.lte('transaction_date', filters.date_to);
+    }
+    return query;
+  }, [filters?.search, filters?.category_id, filters?.type, filters?.date_from, filters?.date_to]);
 
   const fetchTransactions = useCallback(async (pageNum = 0) => {
     if (!user) return;
@@ -18,13 +45,17 @@ export function useTransactions() {
     const from = pageNum * PAGE_SIZE;
     const to = from + PAGE_SIZE - 1;
 
-    const { data, error } = await supabase
+    let query = supabase
       .from('transactions')
       .select('*, categories(*)')
       .eq('user_id', user.id)
       .order('transaction_date', { ascending: false })
       .order('created_at', { ascending: false })
       .range(from, to);
+
+    query = buildQuery(query);
+
+    const { data, error } = await query;
 
     if (error) {
       console.error('Error fetching transactions:', error);
@@ -39,10 +70,14 @@ export function useTransactions() {
 
     setHasMore((data?.length ?? 0) === PAGE_SIZE);
     setLoading(false);
-  }, [user]);
+  }, [user, buildQuery]);
 
   useEffect(() => {
-    if (user) fetchTransactions(0);
+    if (user) {
+      setLoading(true);
+      setPage(0);
+      fetchTransactions(0);
+    }
   }, [user, fetchTransactions]);
 
   const loadMore = () => {
