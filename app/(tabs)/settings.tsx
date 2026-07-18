@@ -7,6 +7,7 @@ import { useCategories } from '../../hooks/useCategories';
 import { useBudgets } from '../../hooks/useBudgets';
 import { Button } from '../../components/ui/Button';
 import { supabase } from '../../lib/supabase';
+import { exportTransactionsToCSV } from '../../lib/export';
 import { spacing, typography, radii } from '../../constants/theme';
 
 export default function SettingsScreen() {
@@ -142,6 +143,30 @@ export default function SettingsScreen() {
             );
           })}
         </View>
+
+        <View style={styles.spacer} />
+
+        <Text style={[styles.label, { color: colors.textSecondary, marginBottom: spacing.md }]}>Data</Text>
+        <Button
+          variant="secondary"
+          onPress={async () => {
+            if (!user) return;
+            Alert.alert('Export', 'Export all transactions to CSV?', [
+              { text: 'Cancel', style: 'cancel' },
+              {
+                text: 'Export',
+                onPress: async () => {
+                  const path = await exportTransactionsToCSV(user.id);
+                  if (path) Alert.alert('Exported', `CSV saved`);
+                  else Alert.alert('Error', 'Could not export transactions');
+                },
+              },
+            ]);
+          }}
+          style={styles.logout}
+        >
+          Export CSV
+        </Button>
 
         <View style={styles.spacer} />
 
