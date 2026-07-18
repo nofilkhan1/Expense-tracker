@@ -29,15 +29,19 @@ export default function SignupScreen() {
   const handleSignup = async () => {
     if (!validate()) return;
     setLoading(true);
-    const { error } = await signUp(email.trim(), password);
+    const { error, needsConfirmation } = await signUp(email.trim(), password);
     setLoading(false);
+
     if (error) {
       Alert.alert('Sign up failed', error);
-    } else {
+    } else if (needsConfirmation) {
       Alert.alert(
-        'Account created',
-        'You are now signed in. Default categories will be set up automatically.',
+        'Check your email',
+        'We sent you a confirmation link. Please confirm your email, then sign in.',
+        [{ text: 'OK', onPress: () => router.replace('/(auth)/login') }],
       );
+    } else {
+      Alert.alert('Welcome', 'Account created! Default categories are being set up.');
     }
   };
 
