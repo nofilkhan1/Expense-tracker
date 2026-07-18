@@ -20,12 +20,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('[AuthContext] getSession resolved:', !!session);
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('[AuthContext] onAuthStateChange event:', event, 'session:', !!session);
       setSession(session);
       setUser(session?.user ?? null);
     });
@@ -35,9 +37,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signIn = async (email: string, password: string) => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      console.log('[AuthContext] signInWithPassword starting...');
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      console.log('[AuthContext] signInWithPassword resolved. error:', error?.message ?? 'none', 'session:', !!data?.session);
       return { error: error?.message ?? null };
     } catch (e: any) {
+      console.log('[AuthContext] signInWithPassword threw:', e?.message);
       return { error: e?.message ?? 'Network error. Check your connection.' };
     }
   };

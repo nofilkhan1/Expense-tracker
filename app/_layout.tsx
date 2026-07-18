@@ -10,6 +10,8 @@ function RootLayoutContent() {
   const { loading, session } = useAuth();
   const { colors, isDark } = useTheme();
 
+  console.log('[RootLayout] loading:', loading, 'session:', !!session);
+
   if (loading) {
     return (
       <View style={[styles.loading, { backgroundColor: colors.bg }]}>
@@ -18,15 +20,15 @@ function RootLayoutContent() {
     );
   }
 
+  console.log('[RootLayout] Rendering stack - session:', !!session);
+
   return (
     <View style={[styles.container, { backgroundColor: colors.bg }]}>
       <StatusBar style={isDark ? 'light' : 'dark'} />
       <Stack screenOptions={{ headerShown: false }}>
-        {session ? (
-          <Stack.Screen name="(tabs)" />
-        ) : (
-          <Stack.Screen name="(auth)" />
-        )}
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       </Stack>
     </View>
   );
