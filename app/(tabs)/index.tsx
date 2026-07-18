@@ -3,14 +3,19 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl } 
 import { router } from 'expo-router';
 import { useTheme } from '../../hooks/useTheme';
 import { useTransactions } from '../../hooks/useTransactions';
+import { useBudgets } from '../../hooks/useBudgets';
+import { useCategories } from '../../hooks/useCategories';
 import { MonthSummaryCard } from '../../components/MonthSummaryCard';
 import { SpendingChart } from '../../components/SpendingChart';
+import { BudgetProgress } from '../../components/BudgetProgress';
 import { TransactionList } from '../../components/TransactionList';
 import { spacing, typography } from '../../constants/theme';
 
 export default function HomeScreen() {
   const { colors } = useTheme();
   const { transactions, loading, refresh } = useTransactions();
+  const { budgets } = useBudgets();
+  const { categories } = useCategories();
 
   const now = new Date();
   const currentMonth = now.getMonth();
@@ -52,18 +57,33 @@ export default function HomeScreen() {
     return months;
   }, [transactions, currentYear, currentMonth]);
 
+  const spentByCategory = useMemo(() => {
+    const map: Record<string, number> = {};
+    for (const t of monthTransactions) {
+      if (t.type === 'expense' && t.categories) {
+        map[t.category_id] = (map[t.category_id] ?? 0) + t.amount;
+      }
+    }
+    return map;
+  }, [monthTransactions]);
+
+  const activeBudgets = useMemo(
+    () => budgets.filter((b) => b.amount > 0),
+    [budgets],
+  );
+
   const recentTransactions = useMemo(
     () => transactions.slice(0, 5),
     [transactions],
   );
 
   return (
-      <ScrollView
-        style={[styles.container, { backgroundColor: colors.bg }]}
-        refreshControl={
-          <RefreshControl refreshing={loading} onRefresh={refresh} tintColor={colors.accent} />
-        }
-      >
+    <ScrollView
+      style={[styles.container, { backgroundColor: colors.bg }]}
+      refreshControl={
+        <RefreshControl refreshing={loading} onRefresh={refresh} tintColor={colors.accent} />
+      }
+    >
       <View style={styles.header}>
         <Text style={[styles.greeting, { color: colors.text }]}>Dashboard</Text>
       </View>
@@ -75,6 +95,24 @@ export default function HomeScreen() {
       />
 
       <SpendingChart data={chartData} title="Net spending (6 months)" />
+
+      {activeBudgets.length > 0 && (
+        <View style={[styles.budgetSection, { backgroundColor: colors.surface, borderColor: colors.surfaceBorder }]}>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>Budget Progress</Text>
+          {activeBudgets.map((b) => {
+            const cat = categories.find((c) => c.id === b.category_id);
+            return (
+              <BudgetProgress
+                key={b.category_id}
+                categoryName={cat?.name}
+                categoryColor={cat?.color}
+                spent={spentByCategory[b.category_id] ?? 0}
+                budget={b.amount}
+              />
+            );
+          })}
+        </View>
+      )}
 
       <View style={styles.sectionHeader}>
         <Text style={[styles.sectionTitle, { color: colors.text }]}>Recent transactions</Text>
@@ -103,6 +141,13 @@ const styles = StyleSheet.create({
     fontSize: typography.size.xxl,
     fontWeight: typography.weight.bold,
   },
+  budgetSection: {
+    borderRadius: 12,
+    padding: spacing.lg,
+    borderWidth: 1,
+    marginHorizontal: spacing.lg,
+    marginTop: spacing.md,
+  },
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -114,9 +159,11 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: typography.size.lg,
     fontWeight: typography.weight.semibold,
+    marginBottom: spacing.md,
   },
   seeAll: {
     fontSize: typography.size.sm,
     fontWeight: typography.weight.medium,
+    marginBottom: spacing.md,
   },
 });
