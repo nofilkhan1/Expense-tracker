@@ -38,6 +38,9 @@ export default function LoginScreen() {
     >
       <Stack.Screen options={{ headerShown: false }} />
       <View style={styles.header}>
+        <View style={styles.logoRow}>
+          <Text style={[styles.logo, { color: colors.primary }]}>$</Text>
+        </View>
         <Text style={[styles.title, { color: colors.text }]}>Welcome back</Text>
         <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
           Sign in to track your expenses
@@ -78,9 +81,25 @@ export default function LoginScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: spacing.xl, justifyContent: 'center' },
-  header: { marginBottom: spacing.xxl },
-  title: { fontSize: typography.size.xxl, fontWeight: typography.weight.bold },
-  subtitle: { fontSize: typography.size.md, marginTop: spacing.sm },
+  header: { marginBottom: spacing.xxxl },
+  logoRow: {
+    alignItems: 'center',
+    marginBottom: spacing.xxl,
+  },
+  logo: {
+    fontSize: 48,
+    fontWeight: typography.weight.bold,
+  },
+  title: {
+    fontSize: typography.size.xxl,
+    fontWeight: typography.weight.bold,
+    textAlign: 'center',
+  },
+  subtitle: {
+    fontSize: typography.size.md,
+    marginTop: spacing.sm,
+    textAlign: 'center',
+  },
   form: { gap: spacing.lg },
   link: { marginTop: spacing.xl },
 });

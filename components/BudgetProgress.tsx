@@ -23,17 +23,26 @@ export function BudgetProgress({ spent, budget, categoryColor, categoryName }: B
     ? colors.expense
     : isWarning
     ? colors.warning
-    : colors.income;
+    : colors.accent;
+
+  const trackColor = isOver
+    ? colors.expense + '15'
+    : isWarning
+    ? colors.warning + '15'
+    : colors.accent + '15';
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={[styles.name, { color: colors.text }]}>{categoryName}</Text>
+        <View style={styles.nameRow}>
+          {categoryColor && <View style={[styles.dot, { backgroundColor: categoryColor }]} />}
+          <Text style={[styles.name, { color: colors.text }]}>{categoryName}</Text>
+        </View>
         <Text style={[styles.amount, { color: isOver ? colors.expense : colors.text }]}>
           ${spent.toFixed(2)} / ${budget.toFixed(2)}
         </Text>
       </View>
-      <View style={[styles.track, { backgroundColor: colors.surfaceBorder }]}>
+      <View style={[styles.track, { backgroundColor: trackColor }]}>
         <View
           style={[
             styles.fill,
@@ -60,12 +69,24 @@ export function BudgetProgress({ spent, budget, categoryColor, categoryName }: B
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: spacing.md,
+    marginBottom: spacing.xl,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: spacing.xs,
+    alignItems: 'center',
+    marginBottom: spacing.sm,
+  },
+  nameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    flex: 1,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
   },
   name: {
     fontSize: typography.size.sm,
@@ -77,13 +98,13 @@ const styles = StyleSheet.create({
     fontVariant: ['tabular-nums'],
   },
   track: {
-    height: 8,
-    borderRadius: radii.sm,
+    height: 10,
+    borderRadius: 5,
     overflow: 'hidden',
   },
   fill: {
     height: '100%',
-    borderRadius: radii.sm,
+    borderRadius: 5,
   },
   warning: {
     fontSize: typography.size.xs,

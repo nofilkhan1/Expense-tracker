@@ -1,6 +1,6 @@
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { useTheme } from '../hooks/useTheme';
-import { spacing, typography, radii } from '../constants/theme';
+import { spacing, typography, radii, shadows } from '../constants/theme';
 import { formatCurrency } from '../lib/formatters';
 
 interface BarData {
@@ -22,7 +22,7 @@ export function SpendingChart({ data, title }: SpendingChartProps) {
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.surface, borderColor: colors.surfaceBorder }]}>
+    <View style={[styles.container, { backgroundColor: colors.surface }, shadows.md]}>
       {title && (
         <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
       )}
@@ -44,7 +44,8 @@ export function SpendingChart({ data, title }: SpendingChartProps) {
                   styles.bar,
                   {
                     height: Math.max(height, 4),
-                    backgroundColor: isNegative ? colors.expense : colors.income,
+                    backgroundColor: isNegative ? colors.primary : colors.accent,
+                    opacity: isNegative ? 0.9 : 0.7,
                   },
                 ]}
               />
@@ -61,16 +62,15 @@ export function SpendingChart({ data, title }: SpendingChartProps) {
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: radii.lg,
-    padding: spacing.lg,
-    borderWidth: 1,
+    borderRadius: radii.xl,
+    padding: spacing.xl,
     marginHorizontal: spacing.lg,
     marginTop: spacing.md,
   },
   title: {
     fontSize: typography.size.md,
     fontWeight: typography.weight.semibold,
-    marginBottom: spacing.md,
+    marginBottom: spacing.lg,
   },
   bars: {
     flexDirection: 'row',
@@ -84,14 +84,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   bar: {
-    width: 24,
+    width: 28,
     borderRadius: radii.sm,
   },
   value: {
-    fontSize: 10,
+    fontSize: 9,
     fontVariant: ['tabular-nums'],
   },
   label: {
     fontSize: 11,
+    fontWeight: typography.weight.medium,
   },
 });

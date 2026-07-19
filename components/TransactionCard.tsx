@@ -1,6 +1,7 @@
-import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
+import { useRef } from 'react';
+import { TouchableOpacity, View, Text, StyleSheet, Animated } from 'react-native';
 import { useTheme } from '../hooks/useTheme';
-import { spacing, typography, radii } from '../constants/theme';
+import { spacing, typography, radii, shadows } from '../constants/theme';
 import { Transaction } from '../lib/types';
 import { formatCurrency } from '../lib/formatters';
 
@@ -12,41 +13,63 @@ interface TransactionCardProps {
 
 export function TransactionCard({ transaction, onPress, onDelete }: TransactionCardProps) {
   const { colors } = useTheme();
+  const scaleAnim = useRef(new Animated.Value(1)).current;
   const isExpense = transaction.type === 'expense';
   const catColor = transaction.categories?.color ?? colors.textSecondary;
 
+  const handlePressIn = () => {
+    Animated.timing(scaleAnim, {
+      toValue: 0.97,
+      duration: 150,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    Animated.timing(scaleAnim, {
+      toValue: 1,
+      duration: 150,
+      useNativeDriver: true,
+    }).start();
+  };
+
   return (
-    <TouchableOpacity
-      onPress={onPress}
-      onLongPress={onDelete}
-      style={[styles.card, { borderBottomColor: colors.surfaceBorder }]}
-      accessibilityRole="button"
-      accessibilityLabel={`${transaction.categories?.name ?? 'Unknown'}, ${formatCurrency(transaction.amount)}`}
-    >
-      <View style={styles.left}>
-        <View style={[styles.iconCircle, { backgroundColor: catColor }]}>
-          <View style={styles.iconPlaceholder} />
-        </View>
-        <View style={styles.details}>
-          <Text style={[styles.categoryName, { color: colors.text }]}>
-            {transaction.categories?.name ?? 'Unknown'}
-          </Text>
-          {transaction.note && (
-            <Text style={[styles.note, { color: colors.textSecondary }]} numberOfLines={1}>
-              {transaction.note}
-            </Text>
-          )}
-        </View>
-      </View>
-      <Text
-        style={[
-          styles.amount,
-          { color: isExpense ? colors.expense : colors.income },
-        ]}
+    <Animated.View style={[{ transform: [{ scale: scaleAnim }] }]}>
+      <TouchableOpacity
+        onPress={onPress}
+        onLongPress={onDelete}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        activeOpacity={0.9}
+        style={[styles.card, { backgroundColor: colors.surface }, shadows.sm]}
+        accessibilityRole="button"
+        accessibilityLabel={`${transaction.categories?.name ?? 'Unknown'}, ${formatCurrency(transaction.amount)}`}
       >
-        {isExpense ? '-' : '+'}{formatCurrency(transaction.amount)}
-      </Text>
-    </TouchableOpacity>
+        <View style={styles.left}>
+          <View style={[styles.iconCircle, { backgroundColor: catColor + '20' }]}>
+            <View style={[styles.iconDot, { backgroundColor: catColor }]} />
+          </View>
+          <View style={styles.details}>
+            <Text style={[styles.categoryName, { color: colors.text }]}>
+              {transaction.categories?.name ?? 'Unknown'}
+            </Text>
+            {transaction.note && (
+              <Text style={[styles.note, { color: colors.textSecondary }]} numberOfLines={1}>
+                {transaction.note}
+              </Text>
+            )}
+          </View>
+        </View>
+        <Text
+          style={[
+            styles.amount,
+            { color: isExpense ? colors.expense : colors.income },
+          ]}
+        >
+          {isExpense ? '-' : '+'}{formatCurrency(transaction.amount)}
+        </Text>
+      </TouchableOpacity>
+    </Animated.View>
   );
 }
 
@@ -57,8 +80,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.lg,
-    minHeight: 52,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    minHeight: 56,
+    marginHorizontal: spacing.lg,
+    marginVertical: spacing.xs,
+    borderRadius: radii.lg,
   },
   left: {
     flexDirection: 'row',
@@ -67,17 +92,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   iconCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  iconPlaceholder: {
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    backgroundColor: 'rgba(255,255,255,0.3)',
+  iconDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
   },
   details: {
     flex: 1,

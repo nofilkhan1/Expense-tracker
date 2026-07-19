@@ -8,7 +8,7 @@ import { useBudgets } from '../../hooks/useBudgets';
 import { Button } from '../../components/ui/Button';
 import { supabase } from '../../lib/supabase';
 import { exportTransactionsToCSV } from '../../lib/export';
-import { spacing, typography, radii } from '../../constants/theme';
+import { spacing, typography, radii, shadows } from '../../constants/theme';
 
 export default function SettingsScreen() {
   const { colors } = useTheme();
@@ -67,26 +67,33 @@ export default function SettingsScreen() {
           headerTintColor: colors.text,
         }}
       />
-      <ScrollView contentContainerStyle={styles.scroll}>
-        <View style={[styles.section, { borderBottomColor: colors.surfaceBorder }]}>
-          <Text style={[styles.label, { color: colors.textSecondary }]}>Account</Text>
-          <Text style={[styles.value, { color: colors.text }]}>{user?.email}</Text>
+      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+        <View style={[styles.section, { backgroundColor: colors.surface }, shadows.sm]}>
+          <Text style={[styles.sectionLabel, { color: colors.textSecondary }]}>Account</Text>
+          <View style={styles.accountRow}>
+            <View style={[styles.avatarCircle, { backgroundColor: colors.accent + '20' }]}>
+              <Text style={[styles.avatarText, { color: colors.accent }]}>
+                {user?.email?.[0]?.toUpperCase() ?? '?'}
+              </Text>
+            </View>
+            <Text style={[styles.accountEmail, { color: colors.text }]}>{user?.email}</Text>
+          </View>
         </View>
 
-        <View style={styles.spacer} />
-
-        <View style={[styles.section, { borderBottomColor: colors.surfaceBorder }]}>
-          <Text style={[styles.label, { color: colors.textSecondary }]}>Categories</Text>
+        <View style={[styles.section, { backgroundColor: colors.surface }, shadows.sm]}>
+          <Text style={[styles.sectionLabel, { color: colors.textSecondary }]}>Categories</Text>
           <TouchableOpacity
             onPress={() => router.push('/add-category')}
-            style={[styles.addBtn, { backgroundColor: colors.accent }]}
+            activeOpacity={0.7}
+            style={[styles.addBtn, { backgroundColor: colors.primary + '15' }]}
           >
-            <Text style={styles.addBtnText}>+ Add Category</Text>
+            <Text style={[styles.addBtnText, { color: colors.primary }]}>+ Add Category</Text>
           </TouchableOpacity>
           {categories.map((cat) => (
             <TouchableOpacity
               key={cat.id}
               onLongPress={() => handleDeleteCategory(cat.id, cat.name)}
+              activeOpacity={0.7}
               style={[styles.categoryRow, { borderBottomColor: colors.surfaceBorder }]}
             >
               <View style={[styles.catDot, { backgroundColor: cat.color }]} />
@@ -98,21 +105,16 @@ export default function SettingsScreen() {
           ))}
         </View>
 
-        <View style={styles.spacer} />
-
-        <View style={[styles.section, { borderBottomColor: colors.surfaceBorder }]}>
-          <Text style={[styles.label, { color: colors.textSecondary }]}>
+        <View style={[styles.section, { backgroundColor: colors.surface }, shadows.sm]}>
+          <Text style={[styles.sectionLabel, { color: colors.textSecondary }]}>
             Monthly Budgets
-          </Text>
-          <Text style={[styles.hint, { color: colors.textSecondary }]}>
-            Set a spending limit per category
           </Text>
           {categories.filter((c) => c.type === 'expense').map((cat) => {
             const currentBudget = budgets.find((b) => b.category_id === cat.id);
             return (
               <View key={cat.id} style={styles.budgetRow}>
                 <View style={[styles.catDot, { backgroundColor: cat.color }]} />
-                <Text style={[styles.catName, { color: colors.text }]}>{cat.name}</Text>
+                <Text style={[styles.budgetName, { color: colors.text }]}>{cat.name}</Text>
                 {editBudgetId === cat.id ? (
                   <View style={styles.budgetEdit}>
                     <TextInput
@@ -121,10 +123,10 @@ export default function SettingsScreen() {
                       placeholder="0.00"
                       placeholderTextColor={colors.textSecondary}
                       keyboardType="numeric"
-                      style={[styles.budgetInput, { color: colors.text, backgroundColor: colors.surface, borderColor: colors.surfaceBorder }]}
+                      style={[styles.budgetInput, { color: colors.text, backgroundColor: colors.bg, borderColor: colors.surfaceBorder }]}
                     />
-                    <TouchableOpacity onPress={() => handleSetBudget(cat.id)} style={styles.budgetSave}>
-                      <Text style={{ color: colors.accent, fontWeight: '600' }}>Set</Text>
+                    <TouchableOpacity onPress={() => handleSetBudget(cat.id)} activeOpacity={0.7} style={styles.budgetSave}>
+                      <Text style={{ color: colors.primary, fontWeight: '600' }}>Set</Text>
                     </TouchableOpacity>
                   </View>
                 ) : (
@@ -133,8 +135,9 @@ export default function SettingsScreen() {
                       setEditBudgetId(cat.id);
                       setBudgetInput(currentBudget?.amount.toString() ?? '');
                     }}
+                    activeOpacity={0.7}
                   >
-                    <Text style={[styles.budgetAmount, { color: currentBudget ? colors.text : colors.textSecondary }]}>
+                    <Text style={[styles.budgetAmount, { color: currentBudget ? colors.primary : colors.textSecondary }]}>
                       {currentBudget ? `$${currentBudget.amount.toFixed(0)}` : 'Set budget'}
                     </Text>
                   </TouchableOpacity>
@@ -144,31 +147,29 @@ export default function SettingsScreen() {
           })}
         </View>
 
-        <View style={styles.spacer} />
-
-        <Text style={[styles.label, { color: colors.textSecondary, marginBottom: spacing.md }]}>Data</Text>
-        <Button
-          variant="secondary"
-          onPress={async () => {
-            if (!user) return;
-            Alert.alert('Export', 'Export all transactions to CSV?', [
-              { text: 'Cancel', style: 'cancel' },
-              {
-                text: 'Export',
-                onPress: async () => {
-                  const path = await exportTransactionsToCSV(user.id);
-                  if (path) Alert.alert('Exported', `CSV saved`);
-                  else Alert.alert('Error', 'Could not export transactions');
+        <View style={[styles.section, { backgroundColor: colors.surface }, shadows.sm]}>
+          <Text style={[styles.sectionLabel, { color: colors.textSecondary }]}>Data</Text>
+          <Button
+            variant="secondary"
+            onPress={async () => {
+              if (!user) return;
+              Alert.alert('Export', 'Export all transactions to CSV?', [
+                { text: 'Cancel', style: 'cancel' },
+                {
+                  text: 'Export',
+                  onPress: async () => {
+                    const path = await exportTransactionsToCSV(user.id);
+                    if (path) Alert.alert('Exported', `CSV saved`);
+                    else Alert.alert('Error', 'Could not export transactions');
+                  },
                 },
-              },
-            ]);
-          }}
-          style={styles.logout}
-        >
-          Export CSV
-        </Button>
-
-        <View style={styles.spacer} />
+              ]);
+            }}
+            style={styles.exportBtn}
+          >
+            Export CSV
+          </Button>
+        </View>
 
         <Button
           variant="destructive"
@@ -184,35 +185,46 @@ export default function SettingsScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  scroll: { padding: spacing.xl },
+  scroll: { padding: spacing.lg, gap: spacing.lg, paddingBottom: spacing.xxxl },
   section: {
-    paddingVertical: spacing.lg,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderRadius: radii.xl,
+    padding: spacing.xl,
   },
-  label: {
-    fontSize: typography.size.sm,
-    fontWeight: typography.weight.medium,
-  },
-  value: {
-    fontSize: typography.size.md,
-    fontWeight: typography.weight.semibold,
-    marginTop: spacing.xs,
-  },
-  hint: {
+  sectionLabel: {
     fontSize: typography.size.xs,
-    marginTop: spacing.xs,
-    marginBottom: spacing.sm,
+    fontWeight: typography.weight.semibold,
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+    marginBottom: spacing.md,
+  },
+  accountRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+  },
+  avatarCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatarText: {
+    fontSize: typography.size.lg,
+    fontWeight: typography.weight.bold,
+  },
+  accountEmail: {
+    fontSize: typography.size.md,
+    fontWeight: typography.weight.medium,
   },
   addBtn: {
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.sm,
-    borderRadius: 20,
+    borderRadius: radii.lg,
     alignSelf: 'flex-start',
-    marginTop: spacing.md,
     marginBottom: spacing.sm,
   },
   addBtnText: {
-    color: '#FFFFFF',
     fontSize: typography.size.sm,
     fontWeight: typography.weight.semibold,
   },
@@ -222,11 +234,12 @@ const styles = StyleSheet.create({
     gap: spacing.md,
     paddingVertical: spacing.md,
     borderBottomWidth: StyleSheet.hairlineWidth,
+    minHeight: 44,
   },
   catDot: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
   },
   catName: {
     flex: 1,
@@ -234,12 +247,18 @@ const styles = StyleSheet.create({
   },
   catType: {
     fontSize: typography.size.sm,
+    textTransform: 'capitalize',
   },
   budgetRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.md,
     paddingVertical: spacing.sm,
+    minHeight: 44,
+  },
+  budgetName: {
+    flex: 1,
+    fontSize: typography.size.md,
   },
   budgetEdit: {
     flexDirection: 'row',
@@ -249,7 +268,7 @@ const styles = StyleSheet.create({
   budgetInput: {
     width: 80,
     height: 36,
-    borderRadius: radii.sm,
+    borderRadius: radii.md,
     borderWidth: 1,
     paddingHorizontal: spacing.sm,
     fontSize: typography.size.sm,
@@ -262,6 +281,10 @@ const styles = StyleSheet.create({
     fontSize: typography.size.sm,
     fontWeight: typography.weight.semibold,
   },
-  spacer: { height: spacing.xxl },
-  logout: { marginTop: spacing.xl },
+  exportBtn: {
+    marginTop: spacing.xs,
+  },
+  logout: {
+    marginTop: spacing.xl,
+  },
 });

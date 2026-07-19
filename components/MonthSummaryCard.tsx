@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet } from 'react-native';
 import { useTheme } from '../hooks/useTheme';
-import { spacing, typography, radii } from '../constants/theme';
+import { spacing, typography, radii, shadows } from '../constants/theme';
 import { formatCurrency } from '../lib/formatters';
 
 interface MonthSummaryCardProps {
@@ -14,17 +14,18 @@ export function MonthSummaryCard({ totalIncome, totalExpense, netBalance }: Mont
   const isPositive = netBalance >= 0;
 
   return (
-    <View style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.surfaceBorder }]}>
+    <View style={[styles.card, { backgroundColor: colors.surface }, shadows.md]}>
       <Text style={[styles.label, { color: colors.textSecondary }]}>Balance this month</Text>
       <Text
         style={[
           styles.balance,
-          { color: isPositive ? colors.income : colors.expense },
+          { color: isPositive ? colors.primary : colors.expense },
         ]}
       >
         {isPositive ? '' : '-'}{formatCurrency(Math.abs(netBalance))}
       </Text>
 
+      <View style={styles.divider} />
       <View style={styles.row}>
         <View style={styles.stat}>
           <View style={[styles.dot, { backgroundColor: colors.income }]} />
@@ -33,6 +34,7 @@ export function MonthSummaryCard({ totalIncome, totalExpense, netBalance }: Mont
             {formatCurrency(totalIncome)}
           </Text>
         </View>
+        <View style={styles.statDivider} />
         <View style={styles.stat}>
           <View style={[styles.dot, { backgroundColor: colors.expense }]} />
           <Text style={[styles.statLabel, { color: colors.textSecondary }]}>Expenses</Text>
@@ -47,15 +49,16 @@ export function MonthSummaryCard({ totalIncome, totalExpense, netBalance }: Mont
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: radii.lg,
+    borderRadius: radii.xl,
     padding: spacing.xl,
-    borderWidth: 1,
     marginHorizontal: spacing.lg,
     marginTop: spacing.lg,
   },
   label: {
     fontSize: typography.size.sm,
     fontWeight: typography.weight.medium,
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
   },
   balance: {
     fontSize: typography.size.xxxl,
@@ -63,31 +66,37 @@ const styles = StyleSheet.create({
     fontVariant: ['tabular-nums'],
     marginTop: spacing.xs,
   },
+  divider: {
+    height: 1,
+    backgroundColor: 'rgba(255,255,255,0.06)',
+    marginVertical: spacing.lg,
+  },
   row: {
     flexDirection: 'row',
-    gap: spacing.xl,
-    marginTop: spacing.xl,
   },
   stat: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    gap: spacing.xs,
     flex: 1,
+  },
+  statDivider: {
+    width: 1,
+    backgroundColor: 'rgba(255,255,255,0.06)',
+    marginHorizontal: spacing.lg,
   },
   dot: {
     width: 8,
     height: 8,
     borderRadius: 4,
+    marginBottom: spacing.xs,
   },
   statLabel: {
     fontSize: typography.size.xs,
+    letterSpacing: 0.3,
+    textTransform: 'uppercase',
   },
   statAmount: {
-    fontSize: typography.size.md,
+    fontSize: typography.size.lg,
     fontWeight: typography.weight.semibold,
     fontVariant: ['tabular-nums'],
-    width: '100%',
-    marginTop: 2,
+    marginTop: spacing.xs,
   },
 });

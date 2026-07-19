@@ -79,6 +79,7 @@ export function TransactionList({
       onEndReached={hasMore ? onLoadMore : undefined}
       onEndReachedThreshold={0.5}
       stickySectionHeadersEnabled
+      showsVerticalScrollIndicator={false}
     />
   );
 }
@@ -88,7 +89,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: spacing.xxl,
+    padding: spacing.xxxl,
   },
   emptyText: {
     fontSize: typography.size.lg,
@@ -101,8 +102,10 @@ const styles = StyleSheet.create({
   sectionHeader: {
     fontSize: typography.size.sm,
     fontWeight: typography.weight.semibold,
-    paddingHorizontal: spacing.lg,
+    paddingHorizontal: spacing.xl,
     paddingTop: spacing.lg,
     paddingBottom: spacing.sm,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
 });

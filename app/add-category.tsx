@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, StyleSheet, Alert, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Alert, ScrollView, TouchableOpacity } from 'react-native';
 import { Stack, router } from 'expo-router';
 import { useTheme } from '../hooks/useTheme';
 import { useAuth } from '../hooks/useAuth';
@@ -7,11 +7,11 @@ import { supabase } from '../lib/supabase';
 import { Input } from '../components/ui/Input';
 import { Button } from '../components/ui/Button';
 import { IconPicker } from '../components/IconPicker';
-import { spacing, typography } from '../constants/theme';
+import { spacing, typography, radii, shadows } from '../constants/theme';
 
 const presetColors = [
-  '#FF453A', '#FF9F0A', '#FFD60A', '#34C759', '#30D158',
-  '#0A84FF', '#5E5CE6', '#BF5AF2', '#FF2D55', '#8E8E93',
+  '#FF453A', '#FF9F0A', '#F59E0B', '#34C759', '#30D158',
+  '#0A84FF', '#8B5CF6', '#BF5AF2', '#FF2D55', '#8E8E93',
 ];
 
 export default function AddCategoryScreen() {
@@ -55,7 +55,7 @@ export default function AddCategoryScreen() {
           headerTintColor: colors.text,
         }}
       />
-      <ScrollView contentContainerStyle={styles.scroll}>
+      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         <Input
           value={name}
           onChangeText={setName}
@@ -84,14 +84,15 @@ export default function AddCategoryScreen() {
         <Text style={[styles.label, { color: colors.textSecondary }]}>Color</Text>
         <View style={styles.colorRow}>
           {presetColors.map((c) => (
-            <View
+            <TouchableOpacity
               key={c}
-              onTouchEnd={() => setColor(c)}
+              onPress={() => setColor(c)}
+              activeOpacity={0.7}
               style={[
                 styles.colorSwatch,
                 {
                   backgroundColor: c,
-                  borderColor: color === c ? colors.text : 'transparent',
+                  borderColor: color === c ? colors.primary : 'transparent',
                   borderWidth: color === c ? 2.5 : 0,
                 },
               ]}
@@ -109,7 +110,7 @@ export default function AddCategoryScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  scroll: { padding: spacing.xl, gap: spacing.lg },
+  scroll: { padding: spacing.xl, gap: spacing.lg, paddingBottom: spacing.xxxl },
   typeToggle: {
     flexDirection: 'row',
     gap: spacing.sm,
@@ -118,6 +119,8 @@ const styles = StyleSheet.create({
   label: {
     fontSize: typography.size.sm,
     fontWeight: typography.weight.medium,
+    letterSpacing: 0.3,
+    textTransform: 'uppercase',
   },
   colorRow: {
     flexDirection: 'row',
@@ -125,9 +128,9 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   colorSwatch: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
   },
-  save: { marginTop: spacing.xl },
+  save: { marginTop: spacing.lg },
 });

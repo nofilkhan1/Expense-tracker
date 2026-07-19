@@ -8,7 +8,7 @@ import { Button } from '../../components/ui/Button';
 import { CategoryPicker } from '../../components/CategoryPicker';
 import { useCategories } from '../../hooks/useCategories';
 import { supabase } from '../../lib/supabase';
-import { spacing, typography } from '../../constants/theme';
+import { spacing, typography, radii } from '../../constants/theme';
 
 export default function AddTransactionScreen() {
   const { colors } = useTheme();
@@ -66,7 +66,7 @@ export default function AddTransactionScreen() {
           headerTintColor: colors.text,
         }}
       />
-      <ScrollView style={styles.scroll} keyboardShouldPersistTaps="handled">
+      <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
         <View style={styles.typeToggle}>
           <Button
             variant={type === 'expense' ? 'primary' : 'secondary'}
@@ -121,17 +121,18 @@ export default function AddTransactionScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  scroll: { padding: spacing.xl, gap: spacing.lg },
+  scroll: { padding: spacing.xl, gap: spacing.lg, paddingBottom: spacing.xxxl },
   typeToggle: {
     flexDirection: 'row',
     gap: spacing.sm,
-    marginBottom: spacing.lg,
+    marginBottom: spacing.md,
   },
   typeBtn: { flex: 1 },
   label: {
     fontSize: typography.size.sm,
     fontWeight: typography.weight.medium,
-    marginTop: spacing.lg,
+    letterSpacing: 0.3,
+    textTransform: 'uppercase',
   },
-  save: { marginTop: spacing.xl },
+  save: { marginTop: spacing.lg },
 });

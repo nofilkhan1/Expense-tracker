@@ -22,6 +22,7 @@ export function CategoryPicker({ categories, selectedId, onSelect }: CategoryPic
         <TouchableOpacity
           key={cat.id}
           onPress={() => onSelect(cat)}
+          activeOpacity={0.7}
           style={[
             styles.chip,
             {

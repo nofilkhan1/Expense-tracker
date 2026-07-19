@@ -9,7 +9,7 @@ import { MonthSummaryCard } from '../../components/MonthSummaryCard';
 import { SpendingChart } from '../../components/SpendingChart';
 import { BudgetProgress } from '../../components/BudgetProgress';
 import { TransactionList } from '../../components/TransactionList';
-import { spacing, typography } from '../../constants/theme';
+import { spacing, typography, radii } from '../../constants/theme';
 
 export default function HomeScreen() {
   const { colors } = useTheme();
@@ -80,12 +80,21 @@ export default function HomeScreen() {
   return (
     <ScrollView
       style={[styles.container, { backgroundColor: colors.bg }]}
+      contentContainerStyle={styles.content}
+      showsVerticalScrollIndicator={false}
       refreshControl={
-        <RefreshControl refreshing={loading} onRefresh={refresh} tintColor={colors.accent} />
+        <RefreshControl
+          refreshing={loading}
+          onRefresh={refresh}
+          tintColor={colors.primary}
+          colors={[colors.primary]}
+          progressBackgroundColor={colors.surface}
+        />
       }
     >
       <View style={styles.header}>
         <Text style={[styles.greeting, { color: colors.text }]}>Dashboard</Text>
+        <View style={[styles.accentBar, { backgroundColor: colors.primary }]} />
       </View>
 
       <MonthSummaryCard
@@ -97,7 +106,7 @@ export default function HomeScreen() {
       <SpendingChart data={chartData} title="Net spending (6 months)" />
 
       {activeBudgets.length > 0 && (
-        <View style={[styles.budgetSection, { backgroundColor: colors.surface, borderColor: colors.surfaceBorder }]}>
+        <View style={[styles.budgetSection, { backgroundColor: colors.surface }]}>
           <Text style={[styles.sectionTitle, { color: colors.text }]}>Budget Progress</Text>
           {activeBudgets.map((b) => {
             const cat = categories.find((c) => c.id === b.category_id);
@@ -114,10 +123,14 @@ export default function HomeScreen() {
         </View>
       )}
 
-      <View style={styles.sectionHeader}>
+      <View style={styles.recentHeader}>
         <Text style={[styles.sectionTitle, { color: colors.text }]}>Recent transactions</Text>
-        <TouchableOpacity onPress={() => router.push('/(tabs)/transactions')}>
-          <Text style={[styles.seeAll, { color: colors.accent }]}>See all</Text>
+        <TouchableOpacity
+          onPress={() => router.push('/(tabs)/transactions')}
+          activeOpacity={0.7}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
+          <Text style={[styles.seeAll, { color: colors.primary }]}>See all</Text>
         </TouchableOpacity>
       </View>
 
@@ -134,22 +147,34 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
+  content: { paddingBottom: spacing.xxl },
   header: {
     paddingHorizontal: spacing.xl,
     paddingTop: spacing.xl,
+    marginBottom: spacing.sm,
   },
   greeting: {
     fontSize: typography.size.xxl,
     fontWeight: typography.weight.bold,
   },
+  accentBar: {
+    width: 40,
+    height: 3,
+    borderRadius: 1.5,
+    marginTop: spacing.sm,
+  },
   budgetSection: {
-    borderRadius: 12,
-    padding: spacing.lg,
-    borderWidth: 1,
+    borderRadius: radii.xl,
+    padding: spacing.xl,
     marginHorizontal: spacing.lg,
     marginTop: spacing.md,
   },
-  sectionHeader: {
+  sectionTitle: {
+    fontSize: typography.size.lg,
+    fontWeight: typography.weight.semibold,
+    marginBottom: spacing.lg,
+  },
+  recentHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -157,14 +182,8 @@ const styles = StyleSheet.create({
     marginTop: spacing.xl,
     marginBottom: spacing.sm,
   },
-  sectionTitle: {
-    fontSize: typography.size.lg,
-    fontWeight: typography.weight.semibold,
-    marginBottom: spacing.md,
-  },
   seeAll: {
     fontSize: typography.size.sm,
-    fontWeight: typography.weight.medium,
-    marginBottom: spacing.md,
+    fontWeight: typography.weight.semibold,
   },
 });

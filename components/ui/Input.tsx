@@ -40,8 +40,8 @@ export function Input({
           styles.input,
           {
             color: colors.text,
-            backgroundColor: isDark ? '#2C2C2E' : '#F2F2F7',
-            borderColor: error ? colors.expense : 'transparent',
+            backgroundColor: isDark ? '#1E293B' : '#F1F5F9',
+            borderColor: error ? colors.expense : colors.surfaceBorder,
           },
         ]}
       />
@@ -58,9 +58,10 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 48,
-    borderRadius: radii.md,
+    borderRadius: radii.lg,
     paddingHorizontal: spacing.lg,
     fontSize: typography.size.md,
+    borderWidth: 1,
   },
   error: {
     fontSize: typography.size.xs,

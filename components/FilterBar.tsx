@@ -39,11 +39,12 @@ export function FilterBar({ categories, filters, onChange }: FilterBarProps) {
         </View>
         <TouchableOpacity
           onPress={() => setShowFilters(!showFilters)}
-          style={[styles.filterToggle, { backgroundColor: hasActiveFilters ? colors.accent : colors.surface }]}
+          activeOpacity={0.7}
+          style={[styles.filterToggle, { backgroundColor: hasActiveFilters ? colors.primary : colors.surface }]}
           accessibilityLabel="Toggle filters"
         >
-          <Text style={[styles.filterToggleText, { color: hasActiveFilters ? '#FFF' : colors.text }]}>
-            {hasActiveFilters ? '!' : '#'}
+          <Text style={[styles.filterToggleText, { color: hasActiveFilters ? '#0F172A' : colors.text }]}>
+            #
           </Text>
         </TouchableOpacity>
       </View>
@@ -53,6 +54,7 @@ export function FilterBar({ categories, filters, onChange }: FilterBarProps) {
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScroll}>
             <TouchableOpacity
               onPress={() => update({ category_id: undefined })}
+              activeOpacity={0.7}
               style={[styles.filterChip, {
                 backgroundColor: !filters.category_id ? colors.accent : colors.surface,
                 borderColor: !filters.category_id ? colors.accent : colors.surfaceBorder,
@@ -64,6 +66,7 @@ export function FilterBar({ categories, filters, onChange }: FilterBarProps) {
               <TouchableOpacity
                 key={cat.id}
                 onPress={() => update({ category_id: cat.id === filters.category_id ? undefined : cat.id })}
+                activeOpacity={0.7}
                 style={[styles.filterChip, {
                   backgroundColor: filters.category_id === cat.id ? cat.color : colors.surface,
                   borderColor: filters.category_id === cat.id ? cat.color : colors.surfaceBorder,
@@ -81,6 +84,7 @@ export function FilterBar({ categories, filters, onChange }: FilterBarProps) {
               <TouchableOpacity
                 key={t}
                 onPress={() => update({ type: filters.type === t ? undefined : t })}
+                activeOpacity={0.7}
                 style={[styles.typeChip, {
                   backgroundColor: filters.type === t ? colors.accent : colors.surface,
                   borderColor: filters.type === t ? colors.accent : colors.surfaceBorder,
@@ -94,8 +98,8 @@ export function FilterBar({ categories, filters, onChange }: FilterBarProps) {
           </View>
 
           {hasActiveFilters && (
-            <TouchableOpacity onPress={clearFilters} style={styles.clearBtn}>
-              <Text style={[styles.clearText, { color: colors.accent }]}>Clear filters</Text>
+            <TouchableOpacity onPress={clearFilters} style={styles.clearBtn} activeOpacity={0.7}>
+              <Text style={[styles.clearText, { color: colors.primary }]}>Clear filters</Text>
             </TouchableOpacity>
           )}
         </View>
@@ -116,7 +120,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     height: 40,
-    borderRadius: radii.md,
+    borderRadius: radii.lg,
     borderWidth: 1,
     paddingHorizontal: spacing.md,
   },
@@ -128,7 +132,7 @@ const styles = StyleSheet.create({
   filterToggle: {
     width: 40,
     height: 40,
-    borderRadius: radii.md,
+    borderRadius: radii.lg,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -149,6 +153,8 @@ const styles = StyleSheet.create({
     borderRadius: radii.xl,
     borderWidth: 1,
     marginRight: spacing.sm,
+    minHeight: 36,
+    justifyContent: 'center',
   },
   chipText: {
     fontSize: typography.size.sm,
@@ -163,12 +169,14 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm,
     borderRadius: radii.xl,
     borderWidth: 1,
+    minHeight: 36,
+    justifyContent: 'center',
   },
   clearBtn: {
     alignSelf: 'flex-start',
   },
   clearText: {
     fontSize: typography.size.sm,
-    fontWeight: typography.weight.medium,
+    fontWeight: typography.weight.semibold,
   },
 });
