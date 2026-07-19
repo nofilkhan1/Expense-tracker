@@ -26,9 +26,9 @@ export function SpendingChart({ data, title }: SpendingChartProps) {
       {title && (
         <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
       )}
-      <View style={styles.bars}>
+      <View style={styles.chartArea}>
         {data.map((item, index) => {
-          const height = (Math.abs(item.value) / maxValue) * 120;
+          const height = (Math.abs(item.value) / maxValue) * 140;
           const isNegative = item.value < 0;
 
           return (
@@ -46,6 +46,10 @@ export function SpendingChart({ data, title }: SpendingChartProps) {
                     height: Math.max(height, 4),
                     backgroundColor: isNegative ? colors.primary : colors.accent,
                     opacity: isNegative ? 0.9 : 0.7,
+                    borderTopLeftRadius: 4,
+                    borderTopRightRadius: 4,
+                    borderBottomLeftRadius: 0,
+                    borderBottomRightRadius: 0,
                   },
                 ]}
               />
@@ -72,20 +76,21 @@ const styles = StyleSheet.create({
     fontWeight: typography.weight.semibold,
     marginBottom: spacing.lg,
   },
-  bars: {
+  chartArea: {
     flexDirection: 'row',
     alignItems: 'flex-end',
-    justifyContent: 'space-around',
-    height: 180,
+    justifyContent: 'space-between',
+    height: 200,
+    paddingTop: spacing.lg,
   },
   barContainer: {
     alignItems: 'center',
-    gap: spacing.xs,
+    gap: spacing.sm,
     flex: 1,
+    paddingHorizontal: spacing.xs,
   },
   bar: {
-    width: 28,
-    borderRadius: radii.sm,
+    width: 32,
   },
   value: {
     fontSize: 9,

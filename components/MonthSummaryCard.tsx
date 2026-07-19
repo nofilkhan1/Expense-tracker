@@ -19,13 +19,12 @@ export function MonthSummaryCard({ totalIncome, totalExpense, netBalance }: Mont
       <Text
         style={[
           styles.balance,
-          { color: isPositive ? colors.primary : colors.expense },
+          { color: isPositive ? colors.income : colors.expense },
         ]}
       >
         {isPositive ? '' : '-'}{formatCurrency(Math.abs(netBalance))}
       </Text>
 
-      <View style={styles.divider} />
       <View style={styles.row}>
         <View style={styles.stat}>
           <View style={[styles.dot, { backgroundColor: colors.income }]} />
@@ -61,18 +60,18 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   balance: {
-    fontSize: typography.size.xxxl,
-    fontWeight: typography.weight.bold,
+    fontSize: 48,
+    fontWeight: '800',
     fontVariant: ['tabular-nums'],
     marginTop: spacing.xs,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: 'rgba(255,255,255,0.06)',
-    marginVertical: spacing.lg,
+    letterSpacing: -1,
   },
   row: {
     flexDirection: 'row',
+    marginTop: spacing.xxl,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255,255,255,0.06)',
+    paddingTop: spacing.lg,
   },
   stat: {
     flex: 1,
@@ -95,7 +94,7 @@ const styles = StyleSheet.create({
   },
   statAmount: {
     fontSize: typography.size.lg,
-    fontWeight: typography.weight.semibold,
+    fontWeight: typography.weight.bold,
     fontVariant: ['tabular-nums'],
     marginTop: spacing.xs,
   },

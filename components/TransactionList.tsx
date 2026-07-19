@@ -5,6 +5,7 @@ import { Transaction } from '../lib/types';
 import { TransactionCard } from './TransactionCard';
 import { formatDate } from '../lib/formatters';
 import { groupTransactionsByDate } from '../lib/formatters';
+import { Receipt } from 'lucide-react-native';
 
 interface TransactionListProps {
   transactions: Transaction[];
@@ -40,6 +41,9 @@ export function TransactionList({
   if (transactions.length === 0) {
     return (
       <View style={styles.centered}>
+        <View style={[styles.emptyIcon, { backgroundColor: colors.surface }]}>
+          <Receipt color={colors.textSecondary} size={32} />
+        </View>
         <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
           {emptyMessage}
         </Text>
@@ -91,13 +95,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: spacing.xxxl,
   },
+  emptyIcon: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: spacing.lg,
+  },
   emptyText: {
     fontSize: typography.size.lg,
     fontWeight: typography.weight.semibold,
+    textAlign: 'center',
   },
   emptySubtext: {
     fontSize: typography.size.sm,
     marginTop: spacing.sm,
+    textAlign: 'center',
   },
   sectionHeader: {
     fontSize: typography.size.sm,

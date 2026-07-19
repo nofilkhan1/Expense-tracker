@@ -6,6 +6,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { useCategories } from '../../hooks/useCategories';
 import { useBudgets } from '../../hooks/useBudgets';
 import { Button } from '../../components/ui/Button';
+import { CategoryIcon } from '../../components/CategoryIcon';
 import { supabase } from '../../lib/supabase';
 import { exportTransactionsToCSV } from '../../lib/export';
 import { spacing, typography, radii, shadows } from '../../constants/theme';
@@ -96,7 +97,7 @@ export default function SettingsScreen() {
               activeOpacity={0.7}
               style={[styles.categoryRow, { borderBottomColor: colors.surfaceBorder }]}
             >
-              <View style={[styles.catDot, { backgroundColor: cat.color }]} />
+              <CategoryIcon icon={cat.icon} color={cat.color} size={16} />
               <Text style={[styles.catName, { color: colors.text }]}>{cat.name}</Text>
               <Text style={[styles.catType, { color: colors.textSecondary }]}>
                 {cat.type}
@@ -113,7 +114,7 @@ export default function SettingsScreen() {
             const currentBudget = budgets.find((b) => b.category_id === cat.id);
             return (
               <View key={cat.id} style={styles.budgetRow}>
-                <View style={[styles.catDot, { backgroundColor: cat.color }]} />
+                <CategoryIcon icon={cat.icon} color={cat.color} size={16} />
                 <Text style={[styles.budgetName, { color: colors.text }]}>{cat.name}</Text>
                 {editBudgetId === cat.id ? (
                   <View style={styles.budgetEdit}>
@@ -235,11 +236,6 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.md,
     borderBottomWidth: StyleSheet.hairlineWidth,
     minHeight: 44,
-  },
-  catDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
   },
   catName: {
     flex: 1,

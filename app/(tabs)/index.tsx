@@ -9,7 +9,7 @@ import { MonthSummaryCard } from '../../components/MonthSummaryCard';
 import { SpendingChart } from '../../components/SpendingChart';
 import { BudgetProgress } from '../../components/BudgetProgress';
 import { TransactionList } from '../../components/TransactionList';
-import { spacing, typography, radii } from '../../constants/theme';
+import { spacing, typography, radii, shadows } from '../../constants/theme';
 
 export default function HomeScreen() {
   const { colors } = useTheme();
@@ -106,7 +106,7 @@ export default function HomeScreen() {
       <SpendingChart data={chartData} title="Net spending (6 months)" />
 
       {activeBudgets.length > 0 && (
-        <View style={[styles.budgetSection, { backgroundColor: colors.surface }]}>
+        <View style={[styles.budgetSection, { backgroundColor: colors.surface }, shadows.sm]}>
           <Text style={[styles.sectionTitle, { color: colors.text }]}>Budget Progress</Text>
           {activeBudgets.map((b) => {
             const cat = categories.find((c) => c.id === b.category_id);
@@ -115,6 +115,7 @@ export default function HomeScreen() {
                 key={b.category_id}
                 categoryName={cat?.name}
                 categoryColor={cat?.color}
+                categoryIcon={cat?.icon}
                 spent={spentByCategory[b.category_id] ?? 0}
                 budget={b.amount}
               />

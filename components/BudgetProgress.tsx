@@ -1,16 +1,18 @@
 import { View, Text, StyleSheet } from 'react-native';
 import { useTheme } from '../hooks/useTheme';
 import { spacing, radii, typography } from '../constants/theme';
+import { CategoryIcon } from './CategoryIcon';
 
 interface BudgetProgressProps {
   spent: number;
   budget: number;
   categoryColor?: string;
   categoryName?: string;
+  categoryIcon?: string;
   categoryId?: string;
 }
 
-export function BudgetProgress({ spent, budget, categoryColor, categoryName }: BudgetProgressProps) {
+export function BudgetProgress({ spent, budget, categoryColor, categoryName, categoryIcon }: BudgetProgressProps) {
   const { colors } = useTheme();
   if (budget <= 0) return null;
 
@@ -35,7 +37,7 @@ export function BudgetProgress({ spent, budget, categoryColor, categoryName }: B
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.nameRow}>
-          {categoryColor && <View style={[styles.dot, { backgroundColor: categoryColor }]} />}
+          <CategoryIcon icon={categoryIcon} color={categoryColor ?? colors.accent} size={14} />
           <Text style={[styles.name, { color: colors.text }]}>{categoryName}</Text>
         </View>
         <Text style={[styles.amount, { color: isOver ? colors.expense : colors.text }]}>
@@ -82,11 +84,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: spacing.sm,
     flex: 1,
-  },
-  dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
   },
   name: {
     fontSize: typography.size.sm,

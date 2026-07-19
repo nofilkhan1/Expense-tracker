@@ -4,6 +4,7 @@ import { useTheme } from '../hooks/useTheme';
 import { spacing, typography, radii, shadows } from '../constants/theme';
 import { Transaction } from '../lib/types';
 import { formatCurrency } from '../lib/formatters';
+import { CategoryIcon } from './CategoryIcon';
 
 interface TransactionCardProps {
   transaction: Transaction;
@@ -46,9 +47,7 @@ export function TransactionCard({ transaction, onPress, onDelete }: TransactionC
         accessibilityLabel={`${transaction.categories?.name ?? 'Unknown'}, ${formatCurrency(transaction.amount)}`}
       >
         <View style={styles.left}>
-          <View style={[styles.iconCircle, { backgroundColor: catColor + '20' }]}>
-            <View style={[styles.iconDot, { backgroundColor: catColor }]} />
-          </View>
+          <CategoryIcon icon={transaction.categories?.icon} color={catColor} size={18} />
           <View style={styles.details}>
             <Text style={[styles.categoryName, { color: colors.text }]}>
               {transaction.categories?.name ?? 'Unknown'}
@@ -90,18 +89,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: spacing.md,
     flex: 1,
-  },
-  iconCircle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  iconDot: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
   },
   details: {
     flex: 1,

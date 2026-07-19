@@ -2,6 +2,7 @@ import { ScrollView, TouchableOpacity, View, Text, StyleSheet } from 'react-nati
 import { useTheme } from '../hooks/useTheme';
 import { spacing, radii, typography } from '../constants/theme';
 import { Category } from '../lib/types';
+import { CategoryIcon } from './CategoryIcon';
 
 interface CategoryPickerProps {
   categories: Category[];
@@ -33,7 +34,7 @@ export function CategoryPicker({ categories, selectedId, onSelect }: CategoryPic
           accessibilityRole="button"
           accessibilityLabel={cat.name}
         >
-          <View style={[styles.iconCircle, { backgroundColor: cat.color }]} />
+          <CategoryIcon icon={cat.icon} color={cat.color} size={14} />
           <Text style={[styles.label, { color: colors.text }]}>{cat.name}</Text>
         </TouchableOpacity>
       ))}
@@ -55,11 +56,6 @@ const styles = StyleSheet.create({
     borderRadius: radii.xl,
     borderWidth: 1.5,
     minHeight: 44,
-  },
-  iconCircle: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
   },
   label: {
     fontSize: typography.size.sm,
