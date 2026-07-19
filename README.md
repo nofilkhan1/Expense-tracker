@@ -107,6 +107,12 @@ expense-tracker/
 └── lib/                  # Supabase client, formatters, types
 ```
 
+## Screenshots
+
+| Dashboard | Transactions | Add Transaction | Settings |
+|-----------|-------------|-----------------|----------|
+| ![Dashboard](assets/screenshots/dashboard.png) | ![Transactions](assets/screenshots/transactions.png) | ![Add](assets/screenshots/add.png) | ![Settings](assets/screenshots/settings.png) |
+
 ## Screens
 
 - **Dashboard** — Balance card, spending chart, budget progress, recent transactions
