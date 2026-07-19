@@ -126,6 +126,7 @@ export default function HomeScreen() {
         loading={loading}
         onPressTransaction={(t) => router.push(`/transaction/${t.id}`)}
         emptyMessage="No transactions this month"
+        scrollEnabled={false}
       />
     </ScrollView>
   );

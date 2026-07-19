@@ -14,6 +14,7 @@ interface TransactionListProps {
   onPressTransaction?: (transaction: Transaction) => void;
   onDeleteTransaction?: (transaction: Transaction) => void;
   emptyMessage?: string;
+  scrollEnabled?: boolean;
 }
 
 export function TransactionList({
@@ -24,6 +25,7 @@ export function TransactionList({
   onPressTransaction,
   onDeleteTransaction,
   emptyMessage = 'No transactions yet',
+  scrollEnabled = true,
 }: TransactionListProps) {
   const { colors } = useTheme();
 
@@ -60,6 +62,8 @@ export function TransactionList({
     <SectionList
       sections={sections}
       keyExtractor={(item) => item.id}
+      scrollEnabled={scrollEnabled}
+      nestedScrollEnabled={!scrollEnabled}
       renderItem={({ item }) => (
         <TransactionCard
           transaction={item}
